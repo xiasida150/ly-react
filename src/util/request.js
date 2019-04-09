@@ -1,10 +1,15 @@
 import Axios from "axios";
-import qs from 'qs'
+import qs from 'qs';
+import { BrowserRouter } from 'react-router-dom';
+
+
+
+export const sso = `/a/sso/v1`;
+export const img = `/f/v1`;
 
 
 Axios.defaults.timeout = 5000;
-Axios.defaults.baseURL = 'https://quyou.l520.net/'; //这是调用数据接口
-
+Axios.defaults.baseURL = process.env.REACT_APP_URL; //这是调用数据接口
 
 
 Axios.interceptors.request.use(
@@ -27,9 +32,9 @@ Axios.interceptors.response.use(
         //response.data.error_code是我接口返回的值，如果值为10004，说明Cookie丢失，然后跳转到登录页，这里根据大家自己的情况来设定
         if (response.code == 500) {
             console.log("没有权限 ");
-            // router.push({
-            //   path: '/login',
-            // })
+            BrowserRouter.push({
+              path: '/login',
+            })
         }
         return response;
     },
