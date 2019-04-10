@@ -1,20 +1,37 @@
 import Axios from "axios";
 import qs from 'qs';
-import { BrowserRouter } from 'react-router-dom';
-
-import { aesEdd } from './DES';
+import { createBrowserHistory, createHashHistory } from 'history';
+import store from 'store';
+import { aesAdd, aesEdd, getAesKey } from '@/util/DES';
 
 export const sso = `/a/sso/v1`;
 export const img = `/f/v1`;
+export const auth = `a/auth/v1`;
+
+const AesKeyStr = store.get('user') ? JSON.parse(store.get('user')).aeskey : '' || getAesKey();
+
+const AesKey = AesKeyStr.slice(0, 16)
+const IV = AesKeyStr.slice(16, 32)
+
 
 Axios.defaults.timeout = 5000;
 Axios.defaults.baseURL = process.env.REACT_APP_URL; //这是调用数据接口
 Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
-
 Axios.interceptors.request.use(
     config => {
-        // console.log("token:"+token);
+        if (!(config.url.includes(`/rsakey`) || config.url.includes(`/login`))) {
+            let data = {
+                token: store.get('token') || ''
+            };
+            if (config.method === 'get') {
+                data.data = aesAdd(JSON.stringify(config.params), AesKey, IV);
+                config.params = data;
+            }
+            if (config.method === 'post') {
+                config.data.token = data.token;
+            }
+        }
         config.data = qs.stringify(config.data);
         return config;
     },
@@ -28,17 +45,29 @@ Axios.interceptors.request.use(
 // http response 拦截器
 Axios.interceptors.response.use(
     response => {
-        //response.data.error_code是我接口返回的值，如果值为10004，说明Cookie丢失，然后跳转到登录页，这里根据大家自己的情况来设定
-        if (response.code === 500) {
-            console.log("没有权限 ");
-            BrowserRouter.push({
-                path: '/login',
-            })
+        //response.data.error_code是我接口返回的值，如果值为10004，
+        //说明Cookie丢失，然后跳转到登录页，这里根据大家自己的情况来设定
+        let { url } = response.config
+        let { data, code, message } = response.data
+        if (!(url.includes(`/rsakey`) || url.includes(`/login`))) {
+            if (code === 500) {
+                // const history = createHashHistory();
+                // history.push('/login')
+
+                // const history = createBrowserHistory({});
+                // console.log("history ", history.replace);
+
+                window.location.replace('/login');
+            }
+            data = data ? (data.replace(/[\r\n]/g, '')).trim() : '';
+            return code === 200 && typeof data == 'string' ?
+                { code, data: JSON.parse(aesEdd(data, AesKey, IV)), message } :
+                { code, data: {}, message };
         }
-        return response;
+        return response
     },
     error => {
-        return Promise.reject(error.response.data)
+        return Promise.reject(error.response)
     }
 );
 

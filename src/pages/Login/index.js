@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { getRsakey, login } from './login-api.js';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
-import { Card, Form, Input, Select, Layout,  Button, } from 'element-react';
+import { withRouter } from 'react-router-dom';
+import { Card, Form, Input, Select, Layout, Button, } from 'element-react';
 import store from 'store';
 import './login.less';
 
@@ -9,7 +10,7 @@ import './login.less';
 const aesKeyOnce = `VyfQhURd6CrpnDI9`;
 const aesIvOnce = `tlBIcm4HU4xGO20H`;
 
-export default class Login extends Component {
+class Login extends Component {
 
     constructor(props) {
         super(props);
@@ -35,21 +36,24 @@ export default class Login extends Component {
 
     async onSubmit(e) {
         e.preventDefault();
-        let data = Object.assign({}, { ...this.state.form }) 
+        let data = Object.assign({}, { ...this.state.form })
         let addData = rsaAdd(JSON.stringify(data), store.get('rsak'))
         let res = await login(addData)
 
         let { k } = this.state.form;
         let aeskey = k.slice(0, 16);
         let iv = k.slice(16, 32);
-        if(res.code === 200){
+        if (res.code === 200) {
             let trimdata = (res.data.replace(/[\r\n]/g, '')).trim();
             let eddData = JSON.parse(aesEdd(trimdata, aeskey, iv));
             store.set('token', res.token);
-            store.set('user',JSON.stringify(eddData.user))
-            store.set('userInfo',JSON.stringify(eddData.userInfo))
+            store.set('user', JSON.stringify(eddData.user))
+            store.set('userInfo', JSON.stringify(eddData.userInfo))
+            this.props.history.push({
+                pathname: '/select-hospital',
+            })
         }
-    }eddData
+    } 
 
     onChange(key, value) {
         this.state.form[key] = value;
@@ -97,3 +101,6 @@ export default class Login extends Component {
         )
     }
 }
+
+
+export default withRouter(Login)
