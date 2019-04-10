@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { getRsakey, login } from './login-api.js';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
-import { Card, Form, Input, Select, Layout, DatePicker, Switch, Checkbox, Button, Radio, TimePicker } from 'element-react';
+import { Card, Form, Input, Select, Layout,  Button, } from 'element-react';
 import store from 'store';
-import './login.css';
+import './login.less';
 
 
 const aesKeyOnce = `VyfQhURd6CrpnDI9`;
@@ -49,7 +49,7 @@ export default class Login extends Component {
             store.set('user',JSON.stringify(eddData.user))
             store.set('userInfo',JSON.stringify(eddData.userInfo))
         }
-    }
+    }eddData
 
     onChange(key, value) {
         this.state.form[key] = value;

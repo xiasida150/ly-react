@@ -35,7 +35,7 @@ const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
 // style files regexes
-const cssRegex = /\.css$/;
+const cssRegex = /\.(css|less)$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
@@ -99,8 +99,14 @@ module.exports = function (webpackEnv) {
             }),
           ],
           sourceMap: isEnvProduction && shouldUseSourceMap,
-        },
+        }
       },
+      {
+        loader: require.resolve('less-loader'),
+        options: {
+          javascriptEnabled: true    //允许通过js调用antd组件
+        }
+      }
     ].filter(Boolean);
     if (preProcessor) {
       loaders.push({
