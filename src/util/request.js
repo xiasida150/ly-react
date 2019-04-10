@@ -2,21 +2,20 @@ import Axios from "axios";
 import qs from 'qs';
 import { BrowserRouter } from 'react-router-dom';
 
-
+import { aesEdd } from './DES';
 
 export const sso = `/a/sso/v1`;
 export const img = `/f/v1`;
 
-
 Axios.defaults.timeout = 5000;
 Axios.defaults.baseURL = process.env.REACT_APP_URL; //这是调用数据接口
+Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
 
 Axios.interceptors.request.use(
     config => {
         // console.log("token:"+token);
-        config.data = qs.stringify(config.data);//过滤成？&=格式
-        config.headers = {};
+        config.data = qs.stringify(config.data);
         return config;
     },
 
@@ -30,10 +29,10 @@ Axios.interceptors.request.use(
 Axios.interceptors.response.use(
     response => {
         //response.data.error_code是我接口返回的值，如果值为10004，说明Cookie丢失，然后跳转到登录页，这里根据大家自己的情况来设定
-        if (response.code == 500) {
+        if (response.code === 500) {
             console.log("没有权限 ");
             BrowserRouter.push({
-              path: '/login',
+                path: '/login',
             })
         }
         return response;
@@ -72,9 +71,9 @@ export function get(url, params = {}) {
  * @param data
  * @returns {Promise}
  */
-export function post(url, data = {}) {
+export function post(url, data = {}, config = {}) {
     return new Promise((resolve, reject) => {
-        Axios.post(url, data)
+        Axios.post(url, data, config)
             .then(response => {
                 resolve(response.data);
             }, err => {
