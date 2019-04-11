@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
-import Login from '../Login';
-import SelectHospital from '../SelectHospital';
-
-
+import { Router, Route, Switch, exact, Redirect } from 'react-router-dom';
+import Load from '@/util/lazy';
 
 
 
 export default class Layout extends Component {
     render() {
         return (
-            <React.Fragment>
-                <Route path="/login" component={Login} />
-                <Route path="/select-hospital" component={SelectHospital} />
-            </React.Fragment>
+            <Switch>
+                <Route path="/" exact component={Load(() => import('../Index'))} />
+                <Route path="/login" component={Load(() => import('../Login'))} />
+                <Route path="/select-hospital" component={Load(() => import('../SelectHospital'))} />
+                <Redirect to="/login" />
+            </Switch>
         )
     }
 }

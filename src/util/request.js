@@ -1,14 +1,13 @@
+/* global localStore */
 import Axios from "axios";
 import qs from 'qs';
 import { createBrowserHistory, createHashHistory } from 'history';
-import store from 'store';
 import { aesAdd, aesEdd, getAesKey } from '@/util/DES';
 
 export const sso = `/a/sso/v1`;
 export const img = `/f/v1`;
 export const auth = `a/auth/v1`;
-
-const AesKeyStr = store.get('user') ? JSON.parse(store.get('user')).aeskey : '' || getAesKey();
+const AesKeyStr = localStore.get('user') ? JSON.parse(localStore.get('user')).aeskey : '' || getAesKey();
 
 const AesKey = AesKeyStr.slice(0, 16)
 const IV = AesKeyStr.slice(16, 32)
@@ -22,7 +21,7 @@ Axios.interceptors.request.use(
     config => {
         if (!(config.url.includes(`/rsakey`) || config.url.includes(`/login`))) {
             let data = {
-                token: store.get('token') || ''
+                token: localStore.get('token') || ''
             };
             if (config.method === 'get') {
                 data.data = aesAdd(JSON.stringify(config.params), AesKey, IV);

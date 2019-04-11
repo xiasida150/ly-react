@@ -1,9 +1,9 @@
+/*global localStore*/
 import React, { Component } from 'react';
 import { getRsakey, login } from './login-api.js';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
 import { withRouter } from 'react-router-dom';
 import { Card, Form, Input, Select, Layout, Button, } from 'element-react';
-import store from 'store';
 import './login.less';
 
 
@@ -31,13 +31,13 @@ class Login extends Component {
         let result = await getRsakey();
         let data = (result.data.replace(/[\r\n]/g, '')).trim();
         let rsak = JSON.parse(aesEdd(data, aesKeyOnce, aesIvOnce));
-        store.set('rsak', rsak.rsa)
+        localStore.set('rsak', rsak.rsa)
     }
 
     async onSubmit(e) {
         e.preventDefault();
         let data = Object.assign({}, { ...this.state.form })
-        let addData = rsaAdd(JSON.stringify(data), store.get('rsak'))
+        let addData = rsaAdd(JSON.stringify(data), localStore.get('rsak'))
         let res = await login(addData)
 
         let { k } = this.state.form;
@@ -46,9 +46,9 @@ class Login extends Component {
         if (res.code === 200) {
             let trimdata = (res.data.replace(/[\r\n]/g, '')).trim();
             let eddData = JSON.parse(aesEdd(trimdata, aeskey, iv));
-            store.set('token', res.token);
-            store.set('user', JSON.stringify(eddData.user))
-            store.set('userInfo', JSON.stringify(eddData.userInfo))
+            localStore.set('token', res.token);
+            localStore.set('user', JSON.stringify(eddData.user))
+            localStore.set('userInfo', JSON.stringify(eddData.userInfo))
             this.props.history.push({
                 pathname: '/select-hospital',
             })

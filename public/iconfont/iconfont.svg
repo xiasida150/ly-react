@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+<metadata>
+Created by iconfont
+</metadata>
+<defs>
+
+<font id="iconfont" horiz-adv-x="1024" >
+  <font-face
+    font-family="iconfont"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1024"
+    ascent="896"
+    descent="-128"
+  />
+    <missing-glyph />
+    
+    <glyph glyph-name="iconfonticontrianglecopy" unicode="&#58928;" d="M814.39 255.622l-303.351 303.351-303.351-303.351 54.604-54.603 248.747 248.748 248.748-248.748z"  horiz-adv-x="1024" />
+
+    
+    <glyph glyph-name="jiantou" unicode="&#58898;" d="M511.31 226.6a61.19 61.19 0 0 0-43.25 17.79l-237.12 237.2a35 35 0 0 0 49.55 49.55l230.89-230.9 230.9 230.89a35 35 0 1 0 49.55-49.55L554.7 244.46a61.41 61.41 0 0 0-43.39-17.86z"  horiz-adv-x="1024" />
+
+    
+    <glyph glyph-name="gengduo" unicode="&#58880;" d="M36.571429 822.857143h1097.142857a36.571429 36.571429 0 0 1 0 73.142857H36.571429a36.571429 36.571429 0 0 1 0-73.142857zM1133.714286 424.96H36.571429a36.571429 36.571429 0 0 1 0-73.142857h1097.142857a36.571429 36.571429 0 0 1 0 73.142857zM1133.714286-54.857143H36.571429a36.571429 36.571429 0 0 1 0-73.142857h1097.142857a36.571429 36.571429 0 0 1 0 73.142857z"  horiz-adv-x="1170" />
+
+    
+
+
+  </font>
+</defs></svg>

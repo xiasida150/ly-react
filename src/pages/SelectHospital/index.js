@@ -1,9 +1,9 @@
+/*global localStore*/
 import React, { Component } from 'react';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
 import { withRouter } from 'react-router-dom';
 import { Card, Form, Input, Select, Layout, Button, } from 'element-react';
 import { getHospitalList, getHospitalInfo } from './api.js';
-import store from 'store';
 
 
 class SelectHospital extends Component {
@@ -35,9 +35,9 @@ class SelectHospital extends Component {
         const { hospitalId } = this.state.hospital;
         let hospitalInfo = hospitalId ? await getHospitalInfo({ hospitalId, type: "true" }) : '';
         if(hospitalInfo){
-            store.set('doctor', JSON.stringify(hospitalInfo.doctor))
-            store.set('hospitalInfo', JSON.stringify(hospitalInfo.hospitalInfo))
-            store.set("hospitalId", hospitalId);
+            localStore.set('doctor', JSON.stringify(hospitalInfo.doctor))
+            localStore.set('hospitalInfo', JSON.stringify(hospitalInfo.hospitalInfo))
+            localStore.set("hospitalId", hospitalId);
             this.props.history.push({
                 pathname: '/',
             })
@@ -93,7 +93,7 @@ class SelectHospital extends Component {
                                 </Form.Item>
 
                                 <Form.Item className='loginBtn' style={{ marginTop: 166 }}>
-                                    <Button type="primary" nativeType="submit">登录</Button>
+                                    <Button style={{width: '100%'}} type="primary" nativeType="submit">登录</Button>
                                 </Form.Item>
                             </Form>
                         </Card>
