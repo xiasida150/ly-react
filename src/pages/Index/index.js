@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Menu, Badge, Dropdown } from 'element-react';
+import { Menu, Badge, Dropdown, Layout } from 'element-react';
 import { Link } from 'react-router-dom';
 import './index.less';
 
@@ -15,6 +15,13 @@ export default class Index extends Component {
         }
     }
     onSelect() {
+
+    }
+    onOpen() {
+
+    }
+
+    onClose() {
 
     }
     changeLeftPos() {
@@ -66,7 +73,29 @@ export default class Index extends Component {
                     </ul>
                 </div>
                 <div className='index-container'>
-                    <div className='index-aside' style={{ width: leftWidth }}>Aside</div>
+                    <div className='index-aside' style={{ width: leftWidth }}>
+
+                        <Menu defaultActive="1"
+                            className="el-menu-vertical-demo left-aside-wrap"
+                            onOpen={this.onOpen.bind(this)}
+                            onClose={this.onClose.bind(this)}
+                        >
+                            <Menu.SubMenu index="1" title={<span><i className="el-icon-message"></i>导航一</span>}>
+                                <Menu.ItemGroup title="分组一" className='sub-me-wrap'>
+                                    <Menu.Item index="1-1">选项1</Menu.Item>
+                                    <Menu.Item index="1-2">选项2</Menu.Item>
+                                </Menu.ItemGroup>
+                                <Menu.ItemGroup title="分组一" className='sub-me-wrap'>
+                                    <Menu.Item index="1-1">选项1</Menu.Item>
+                                    <Menu.Item index="1-2">选项2</Menu.Item>
+                                </Menu.ItemGroup>
+
+                            </Menu.SubMenu>
+                            <Menu.Item index="2"><i className="el-icon-menu"></i>导航二</Menu.Item>
+                            <Menu.Item index="3"><i className="el-icon-setting"></i>导航三</Menu.Item>
+                        </Menu>
+
+                    </div>
                     <div className='index-main'>Main</div>
                 </div>
             </div>
