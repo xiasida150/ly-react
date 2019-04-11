@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Menu, Badge, Dropdown, Layout } from 'element-react';
 import { Link } from 'react-router-dom';
+import { getMenuLists } from "./api.js";
+
 import './index.less';
 
 export default class Index extends Component {
@@ -11,7 +13,8 @@ export default class Index extends Component {
         this.state = {
             indexTop: {
                 leftWidth: 200
-            }
+            },
+            leftList: []
         }
     }
     onSelect() {
@@ -24,6 +27,17 @@ export default class Index extends Component {
     onClose() {
 
     }
+
+    //WARNING! To be deprecated in React v17. Use componentDidMount instead.
+    async componentWillMount() {
+        let menulists = await getMenuLists();
+        let menulist = menulists.filter(item => item.menuType === 1);
+        this.setState({
+            leftList: menulist
+        })
+    }
+
+
     changeLeftPos() {
         const { leftWidth } = this.state.indexTop;
         const width = leftWidth === 200 ? 0 : 200;
@@ -35,6 +49,7 @@ export default class Index extends Component {
     }
     render() {
         const { leftWidth } = this.state.indexTop;
+        const { leftList } = this.state;
         return (
             <div className='index-container is-vertical'>
                 <div className='index-header' style={{ height: 60 }}>
@@ -77,10 +92,25 @@ export default class Index extends Component {
 
                         <Menu defaultActive="1"
                             className="el-menu-vertical-demo left-aside-wrap"
-                            onOpen={this.onOpen.bind(this)}
-                            onClose={this.onClose.bind(this)}
                         >
-                            <Menu.SubMenu index="1" title={<span><i className="el-icon-message"></i>导航一</span>}>
+                            {
+                                leftList && leftList.map((item, i) => {
+
+                                    if (item.menuLevel === 1) {
+                                        return <Menu.Item index={`${i + 1}`} >{item.menuName}</Menu.Item>
+                                    }
+
+
+
+                                })
+                            }
+
+
+
+
+
+
+                            {/* <Menu.SubMenu index="1" title={<span><i className="el-icon-message"></i>导航一</span>}>
                                 <Menu.ItemGroup title="分组一" className='sub-me-wrap'>
                                     <Menu.Item index="1-1">选项1</Menu.Item>
                                     <Menu.Item index="1-2">选项2</Menu.Item>
@@ -92,13 +122,13 @@ export default class Index extends Component {
 
                             </Menu.SubMenu>
                             <Menu.Item index="2"><i className="el-icon-menu"></i>导航二</Menu.Item>
-                            <Menu.Item index="3"><i className="el-icon-setting"></i>导航三</Menu.Item>
+                            <Menu.Item index="3"><i className="el-icon-setting"></i>导航三</Menu.Item> */}
                         </Menu>
 
                     </div>
                     <div className='index-main'>Main</div>
                 </div>
-            </div>
+            </div >
         )
     }
 }
