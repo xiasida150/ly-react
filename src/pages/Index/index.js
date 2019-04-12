@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Menu, Badge, Dropdown, Layout } from 'element-react';
 import { Link } from 'react-router-dom';
 import { getMenuLists } from "./api.js";
+import { meshObjByPara } from "@/util/tool";
 
 import './index.less';
 
@@ -32,8 +33,10 @@ export default class Index extends Component {
     async componentWillMount() {
         let menulists = await getMenuLists();
         let menulist = menulists.filter(item => item.menuType === 1);
+        let meList = meshObjByPara(menulist, 'menuPid')
+        console.log('meList --> ', meList)
         this.setState({
-            leftList: menulist
+            leftList: meList
         })
     }
 
@@ -50,6 +53,58 @@ export default class Index extends Component {
     render() {
         const { leftWidth } = this.state.indexTop;
         const { leftList } = this.state;
+        const listNode = leftList && leftList.map((item, i) => {
+            return (
+                item.children ?
+                    <Menu.SubMenu
+                        index={`${i + 1}`}
+                        key={`${i + 1}`}
+                        title={<span><i className="el-icon-message"></i>{item.menuName}</span>}
+                    >
+                        {
+                            item.children && item.children.map((value, num) => {
+                                if (value.children) {
+                                    return (
+                                        <Menu.SubMenu
+                                            index={`${i + 1}-${num}`}
+                                            key={`${num + 1}`}
+                                            className="sub-me-wrap"
+                                            title={<span><i className="iconfont icon-dian"></i>{value.menuName}</span>}
+                                        >
+                                            {
+                                                value.children && value.children.map((tvalue, tnum) => {
+                                                    return (
+                                                        <Menu.Item
+                                                            index={`${i + 1}-${num}-${tnum}`}
+                                                            key={`${tnum + 1}`}
+                                                            className='th-li'
+                                                        >
+                                                            <i className="iconfont icon-dian"></i>
+                                                            {tvalue.menuName}
+                                                        </Menu.Item>
+                                                    )
+                                                })
+                                            }
+                                        </Menu.SubMenu>
+                                    )
+                                } else {
+                                    return (
+                                        <Menu.Item index={`${i + 1}-${num}`} key={`${num + 1}`} className='th-li'>
+                                            <i className="iconfont icon-dian"></i>
+                                            <Link to=''>{value.menuName}</Link> 
+                                        </Menu.Item>
+                                    )
+                                }
+                            })
+                        }
+                    </Menu.SubMenu> :
+                    <Menu.Item index={`${i + 1}`} key={`${i + 1}`} >
+                        <i className="el-icon-menu"></i>
+                        {item.menuName}
+                    </Menu.Item>
+            )
+        })
+
         return (
             <div className='index-container is-vertical'>
                 <div className='index-header' style={{ height: 60 }}>
@@ -92,37 +147,9 @@ export default class Index extends Component {
 
                         <Menu defaultActive="1"
                             className="el-menu-vertical-demo left-aside-wrap"
+                            uniqueOpened='true'
                         >
-                            {
-                                leftList && leftList.map((item, i) => {
-
-                                    if (item.menuLevel === 1) {
-                                        return <Menu.Item index={`${i + 1}`} >{item.menuName}</Menu.Item>
-                                    }
-
-
-
-                                })
-                            }
-
-
-
-
-
-
-                            {/* <Menu.SubMenu index="1" title={<span><i className="el-icon-message"></i>导航一</span>}>
-                                <Menu.ItemGroup title="分组一" className='sub-me-wrap'>
-                                    <Menu.Item index="1-1">选项1</Menu.Item>
-                                    <Menu.Item index="1-2">选项2</Menu.Item>
-                                </Menu.ItemGroup>
-                                <Menu.ItemGroup title="分组一" className='sub-me-wrap'>
-                                    <Menu.Item index="1-1">选项1</Menu.Item>
-                                    <Menu.Item index="1-2">选项2</Menu.Item>
-                                </Menu.ItemGroup>
-
-                            </Menu.SubMenu>
-                            <Menu.Item index="2"><i className="el-icon-menu"></i>导航二</Menu.Item>
-                            <Menu.Item index="3"><i className="el-icon-setting"></i>导航三</Menu.Item> */}
+                            {listNode}
                         </Menu>
 
                     </div>
