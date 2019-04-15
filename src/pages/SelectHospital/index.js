@@ -39,7 +39,7 @@ class SelectHospital extends Component {
             localStore.set('hospitalInfo', JSON.stringify(hospitalInfo.hospitalInfo))
             localStore.set("hospitalId", hospitalId);
             this.props.history.push({
-                pathname: '/',
+                pathname: '/index',
             })
         }
     }

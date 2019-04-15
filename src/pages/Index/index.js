@@ -1,28 +1,33 @@
 import React, { Component } from 'react';
 import { Menu, Badge, Dropdown, Layout } from 'element-react';
-import { Link } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, exact, Redirect, Link, withRouter  } from 'react-router-dom';
 import { getMenuLists } from "./api.js";
-import { meshObjByPara } from "@/util/tool";
+import { mergeMenu } from "@/util/tool";
+import { routes } from '@/pages/Layout/routers';
+
 
 import './index.less';
 
-export default class Index extends Component {
+ class Index extends Component {
     constructor(props) {
         super(props)
         this.changeLeftPos = this.changeLeftPos.bind(this)
+        this.onSelect = this.onSelect.bind(this)
+        this.onOpen = this.onOpen.bind(this)
 
         this.state = {
             indexTop: {
                 leftWidth: 200
             },
-            leftList: []
+            leftList: [],
+            defaultActive:[]
         }
     }
     onSelect() {
 
     }
     onOpen() {
-
+        console.log('index --> ', this.index)
     }
 
     onClose() {
@@ -33,7 +38,7 @@ export default class Index extends Component {
     async componentWillMount() {
         let menulists = await getMenuLists();
         let menulist = menulists.filter(item => item.menuType === 1);
-        let meList = meshObjByPara(menulist, 'menuPid')
+        let meList = mergeMenu(menulist, 'menuPid')
         console.log('meList --> ', meList)
         this.setState({
             leftList: meList
@@ -80,7 +85,7 @@ export default class Index extends Component {
                                                             className='th-li'
                                                         >
                                                             <i className="iconfont icon-dian"></i>
-                                                            {tvalue.menuName}
+                                                            <Link to={tvalue.feUrl || ''}>{tvalue.menuName}</Link>
                                                         </Menu.Item>
                                                     )
                                                 })
@@ -91,7 +96,7 @@ export default class Index extends Component {
                                     return (
                                         <Menu.Item index={`${i + 1}-${num}`} key={`${num + 1}`} className='th-li'>
                                             <i className="iconfont icon-dian"></i>
-                                            <Link to=''>{value.menuName}</Link> 
+                                            <Link to={value.feUrl || ''}>{value.menuName}</Link>
                                         </Menu.Item>
                                     )
                                 }
@@ -100,10 +105,11 @@ export default class Index extends Component {
                     </Menu.SubMenu> :
                     <Menu.Item index={`${i + 1}`} key={`${i + 1}`} >
                         <i className="el-icon-menu"></i>
-                        {item.menuName}
+                        <Link to={item.feUrl || ''}>{item.menuName}</Link>
                     </Menu.Item>
             )
         })
+        console.log('listNode --> ', listNode)
 
         return (
             <div className='index-container is-vertical'>
@@ -147,15 +153,33 @@ export default class Index extends Component {
 
                         <Menu defaultActive="1"
                             className="el-menu-vertical-demo left-aside-wrap"
-                            uniqueOpened='true'
+                            onOpen={this.onOpen}
+                            onSelect={this.onSelect()}
+                            uniqueOpened={true}
                         >
                             {listNode}
                         </Menu>
 
                     </div>
-                    <div className='index-main'>Main</div>
+                    <div className='index-main'>
+                        <BrowserRouter>
+                            <Switch>
+                                {
+                                    routes.map((item, index) => {
+                                        return (
+                                            <Route path={item.feUrl} key={index} exact={item.exact} component={item.component} />
+                                        )
+                                    })
+                                }
+                                <Redirect to="/index" />
+                            </Switch>
+                        </BrowserRouter>
+                    </div>
                 </div>
             </div >
         )
     }
 }
+
+
+export default withRouter(Index)
