@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Menu, Badge, Dropdown, Layout } from 'element-react';
-import { BrowserRouter, Route, Switch, exact, Redirect, Link, withRouter  } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, exact, Redirect, Link, withRouter } from 'react-router-dom';
 import { getMenuLists } from "./api.js";
 import { mergeMenu } from "@/util/tool";
 import { routes } from '@/pages/Layout/routers';
@@ -8,7 +8,7 @@ import { routes } from '@/pages/Layout/routers';
 
 import './index.less';
 
- class Index extends Component {
+class Index extends Component {
     constructor(props) {
         super(props)
         this.changeLeftPos = this.changeLeftPos.bind(this)
@@ -20,17 +20,16 @@ import './index.less';
                 leftWidth: 200
             },
             leftList: [],
-            defaultActive:[]
+            Active: '1',
+            Openeds: []
         }
     }
-    onSelect() {
-
+    onSelect(index) {
+        this.setState({
+            Active: index
+        })
     }
-    onOpen() {
-        console.log('index --> ', this.index)
-    }
-
-    onClose() {
+    onOpen(index) {
 
     }
 
@@ -39,12 +38,10 @@ import './index.less';
         let menulists = await getMenuLists();
         let menulist = menulists.filter(item => item.menuType === 1);
         let meList = mergeMenu(menulist, 'menuPid')
-        console.log('meList --> ', meList)
         this.setState({
             leftList: meList
         })
     }
-
 
     changeLeftPos() {
         const { leftWidth } = this.state.indexTop;
@@ -57,13 +54,13 @@ import './index.less';
     }
     render() {
         const { leftWidth } = this.state.indexTop;
-        const { leftList } = this.state;
+        const { leftList, Active, Openeds } = this.state;
         const listNode = leftList && leftList.map((item, i) => {
             return (
                 item.children ?
                     <Menu.SubMenu
-                        index={`${i + 1}`}
-                        key={`${i + 1}`}
+                        index={`${i}`}
+                        key={`${i}`}
                         title={<span><i className="el-icon-message"></i>{item.menuName}</span>}
                     >
                         {
@@ -71,8 +68,8 @@ import './index.less';
                                 if (value.children) {
                                     return (
                                         <Menu.SubMenu
-                                            index={`${i + 1}-${num}`}
-                                            key={`${num + 1}`}
+                                            index={`${i}-${num}`}
+                                            key={`${i}-${num}`}
                                             className="sub-me-wrap"
                                             title={<span><i className="iconfont icon-dian"></i>{value.menuName}</span>}
                                         >
@@ -80,12 +77,13 @@ import './index.less';
                                                 value.children && value.children.map((tvalue, tnum) => {
                                                     return (
                                                         <Menu.Item
-                                                            index={`${i + 1}-${num}-${tnum}`}
-                                                            key={`${tnum + 1}`}
+                                                            index={`${i}-${num}-${tnum}`}
+                                                            key={`${i}-${num}-${tnum}`}
                                                             className='th-li'
                                                         >
                                                             <i className="iconfont icon-dian"></i>
-                                                            <Link to={tvalue.feUrl || ''}>{tvalue.menuName}</Link>
+                                                            <Link to={tvalue.feUrl || ''}
+                                                            >{tvalue.menuName}</Link>
                                                         </Menu.Item>
                                                     )
                                                 })
@@ -94,22 +92,23 @@ import './index.less';
                                     )
                                 } else {
                                     return (
-                                        <Menu.Item index={`${i + 1}-${num}`} key={`${num + 1}`} className='th-li'>
+                                        <Menu.Item index={`${i}-${num}`} key={`${i}-${num}`} className='th-li'>
                                             <i className="iconfont icon-dian"></i>
-                                            <Link to={value.feUrl || ''}>{value.menuName}</Link>
+                                            <Link to={value.feUrl || ''}
+                                            >{value.menuName}</Link>
                                         </Menu.Item>
                                     )
                                 }
                             })
                         }
                     </Menu.SubMenu> :
-                    <Menu.Item index={`${i + 1}`} key={`${i + 1}`} >
+                    <Menu.Item index={`${i}`} key={`${i}`} className='th-li'>
                         <i className="el-icon-menu"></i>
-                        <Link to={item.feUrl || ''}>{item.menuName}</Link>
+                        <Link to={item.feUrl || ''}
+                        >{item.menuName}+1</Link>
                     </Menu.Item>
             )
         })
-        console.log('listNode --> ', listNode)
 
         return (
             <div className='index-container is-vertical'>
@@ -151,29 +150,51 @@ import './index.less';
                 <div className='index-container'>
                     <div className='index-aside' style={{ width: leftWidth }}>
 
-                        <Menu defaultActive="1"
-                            className="el-menu-vertical-demo left-aside-wrap"
-                            onOpen={this.onOpen}
-                            onSelect={this.onSelect()}
-                            uniqueOpened={true}
+                        <Menu defaultActive="0"
+                            className="left-nav-ul"
                         >
-                            {listNode}
+                            {
+                                leftList.map((fnode, findex) => {
+                                    return <Menu.Item index={`${findex}`}
+                                    key={`${findex}`}
+                                    >
+                                        <i className="el-icon-setting"></i>
+                                        <Link to={fnode.feUrl || ''}>{fnode.menuName}</Link>
+                                    </Menu.Item>
+
+                                })
+                            }
+
+
+
+
+
+                            <Menu.SubMenu index="1" title={<span><i className="el-icon-message"></i>导航一</span>}>
+                                <Menu.ItemGroup title="分组一">
+                                    <Menu.Item index="1-1">选项1</Menu.Item>
+                                    <Menu.Item index="1-2">选项2</Menu.Item>
+                                </Menu.ItemGroup>
+                                <Menu.ItemGroup title="分组2">
+                                    <Menu.Item index="1-3">选项3</Menu.Item>
+                                </Menu.ItemGroup>
+                            </Menu.SubMenu>
+                            <Menu.Item index="2"><i className="el-icon-menu"></i>导航二</Menu.Item>
+                            <Menu.Item index="3"><i className="el-icon-setting"></i>导航三</Menu.Item>
+
                         </Menu>
 
                     </div>
                     <div className='index-main'>
-                        <BrowserRouter>
-                            <Switch>
-                                {
-                                    routes.map((item, index) => {
-                                        return (
-                                            <Route path={item.feUrl} key={index} exact={item.exact} component={item.component} />
-                                        )
-                                    })
-                                }
-                                <Redirect to="/index" />
-                            </Switch>
-                        </BrowserRouter>
+                        <Switch>
+                            {
+                                routes.map((item, index) => {
+                                    return (
+                                        <Route path={item.feUrl} key={index} exact={item.exact} component={item.component} />
+                                    )
+                                })
+                            }
+                            <Redirect to="/index" />
+                        </Switch>
                     </div>
                 </div>
             </div >

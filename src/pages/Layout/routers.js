@@ -7,31 +7,34 @@ export const routes = [{
     component: ()=>'首页'
 },
 {
-    feUrl: '/index/sign/query',
+    feUrl: '/sign/query',
     menuName: '签约查询',
     exact: false,
     component: ()=>'签约查询'
 },
 {
-    feUrl: '/index/health/assessment',
+    feUrl: '/health/assessment',
     menuName: '健康评估',
     exact: false,
-    component: ()=>'签约查询'
+    component: ()=>'健康评估'
 },
 {
-    feUrl: '/index/protocol/management',
+    feUrl: '/protocol/management',
     menuName: '协议管理',
     exact: false,
+    component: ()=>'协议管理'
 },
 {
-    feUrl: '/index/servicePackage/management',
+    feUrl: '/servicePackage/management',
     menuName: '服务包管理',
     exact: false,
+    component: ()=>'服务包管理'
 },
 {
-    feUrl: '/index/team/management',
+    feUrl: '/team/management',
     menuName: '团队管理',
     exact: false,
+    component: ()=>'团队管理'
 },
 
 
