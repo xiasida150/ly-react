@@ -3,7 +3,7 @@ import Load from '@/util/lazy';
 export const routes = [{
     feUrl: '/index',
     menuName: '首页',
-    exact: true,
+    exact: false,
     component: ()=>'首页'
 },
 {
@@ -35,6 +35,12 @@ export const routes = [{
     menuName: '团队管理',
     exact: false,
     component: ()=>'团队管理'
+},
+{
+    feUrl: '/contract/service',
+    menuName: '签约服务记录表',
+    exact: false,
+    component: ()=>'签约服务记录表'
 },
 
 

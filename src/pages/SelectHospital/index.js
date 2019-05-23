@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
 import { withRouter } from 'react-router-dom';
-import { Card, Form, Input, Select, Layout, Button, } from 'element-react';
+import { Form, Icon, Input, Button, Checkbox, Select, Row, Col, Card } from 'antd';
 import { getHospitalList, getHospitalInfo } from './api.js';
 
-
+const { Option } = Select;
 class SelectHospital extends Component {
 
 
@@ -18,6 +18,7 @@ class SelectHospital extends Component {
                 hosList: []
             }
         };
+        this.onChange = this.onChange.bind(this)
     }
     async componentWillMount() {
         let list = await getHospitalList();
@@ -34,7 +35,7 @@ class SelectHospital extends Component {
         e.preventDefault();
         const { hospitalId } = this.state.hospital;
         let hospitalInfo = hospitalId ? await getHospitalInfo({ hospitalId, type: "true" }) : '';
-        if(hospitalInfo){
+        if (hospitalInfo) {
             localStore.set('doctor', JSON.stringify(hospitalInfo.doctor))
             localStore.set('hospitalInfo', JSON.stringify(hospitalInfo.hospitalInfo))
             localStore.set("hospitalId", hospitalId);
@@ -45,15 +46,20 @@ class SelectHospital extends Component {
     }
 
 
-
-
-    onChange(key, value) {
+    onChange(e) {
         this.setState({
-            hospital: Object.assign(this.state.hospital, { [key]: value })
+            hospital: {
+                hospitalId:e
+            }
         });
     }
     render() {
         const { hosList, hospitalId } = this.state.hospital;
+        const { getFieldDecorator } = this.props.form;
+        const formItemLayout = {
+            labelCol: { span: 6 },
+            wrapperCol: { span: 14 },
+        };
         return (
             <React.Fragment>
                 <br />
@@ -67,39 +73,37 @@ class SelectHospital extends Component {
                 <br />
                 <br />
                 <br />
-                <Layout.Row gutter="20">
-                    <Layout.Col span="5" offset="12">
-                        <Card className="box-card" style={{ height: 300 }}>
-
-                            <Form model={this.state.form} labelWidth="80" labelPosition='top' onSubmit={this.onSubmit.bind(this)}>
+                <Row type="flex" justify="space-around" align="middle">
+                    <Col span={8}></Col>
+                    <Col span={4}>
+                        <Card title="登录" bordered={false} style={{ width: 300, textAlign: "center" }}>
+                            <Form  {...formItemLayout} onSubmit={this.onSubmit.bind(this)}>
                                 <Form.Item label="选择机构">
-                                    <Select value={hospitalId}
-                                        placeholder="请选择一个医院"
-                                        style={{ width: '100%' }}
-                                        onChange={this.onChange.bind(this, 'hospitalId')}
+                                    <Select placeholder="请选择一个医院"
+                                        onChange={this.onChange}
                                     >
-                                        {
-                                            hosList && hosList.map((domain, index) => {
-                                                return (
-                                                    <Select.Option
-                                                        key={index}
-                                                        value={domain.id}
-                                                        label={domain.hospitalName}
-                                                    ></Select.Option>
-                                                )
-                                            })
-                                        }
+                                    {
+                                        hosList && hosList.map((val,index)=>{
+                                            return <Option key={index} value={val.id}>{val.hospitalName}</Option>
+                                        })
+                                    }
                                     </Select>
                                 </Form.Item>
 
                                 <Form.Item className='loginBtn' style={{ marginTop: 166 }}>
-                                    <Button style={{width: '100%'}} type="primary" nativeType="submit">登录</Button>
+                                    <Button style={{ width: '100%' }} type="primary"  htmlType="submit" >登录</Button>
                                 </Form.Item>
                             </Form>
                         </Card>
 
-                    </Layout.Col>
-                </Layout.Row>
+
+                    </Col>
+                    <Col span={4}></Col>
+                </Row>
+
+
+
+
 
             </React.Fragment>
         )
@@ -107,4 +111,5 @@ class SelectHospital extends Component {
 }
 
 
-export default withRouter(SelectHospital)
+
+export default withRouter(Form.create()(SelectHospital))

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { getRsakey, login } from './login-api.js';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
 import { withRouter } from 'react-router-dom';
-import { Card, Form, Input, Select, Layout, Button, } from 'element-react';
+import { Form, Icon, Input, Button, Checkbox, Card, Row, Col } from 'antd';
 import './login.less';
 
 
@@ -24,6 +24,12 @@ class Login extends Component {
                 k: getAesKey(),
             }
         };
+
+        this.onSubmit = this.onSubmit.bind(this)
+        this.onChangeU = this.onChangeU.bind(this)
+        this.onChangeP = this.onChangeP.bind(this)
+        this.onChangeK = this.onChangeK.bind(this)
+
     }
 
 
@@ -36,11 +42,11 @@ class Login extends Component {
 
     async onSubmit(e) {
         e.preventDefault();
-        let data = Object.assign({}, { ...this.state.form })
+        let data = this.state.form
         let addData = rsaAdd(JSON.stringify(data), localStore.get('rsak'))
         let res = await login(addData)
 
-        let { k } = this.state.form;
+        let { k } = data;
         let aeskey = k.slice(0, 16);
         let iv = k.slice(16, 32);
         if (res.code === 200) {
@@ -53,15 +59,35 @@ class Login extends Component {
                 pathname: '/select-hospital',
             })
         }
-    } 
+    }
 
-    onChange(key, value) {
-        this.state.form[key] = value;
-        this.forceUpdate();
+
+
+    onChangeU(e) {
+        this.setState({
+            form: {
+                u: e.target.value
+            }
+        })
+    }
+    onChangeP(e) {
+        this.setState({
+            form: {
+                p: e.target.value
+            }
+        })
+    }
+    onChangeK(e) {
+        this.setState({
+            form: {
+                k: e.target.value
+            }
+        })
     }
 
 
     render() {
+        const { getFieldDecorator } = this.props.form;
         return (
             <React.Fragment>
                 <br />
@@ -75,27 +101,52 @@ class Login extends Component {
                 <br />
                 <br />
                 <br />
-                <Layout.Row gutter="20">
-                    <Layout.Col span="5" offset="12">
-                        <Card className="box-card">
-
-                            <Form model={this.state.form} labelWidth="80" onSubmit={this.onSubmit.bind(this)}>
+                <Row type="flex" justify="space-around" align="middle">
+                    <Col span={8}></Col>
+                    <Col span={4}>
+                        <Card title="登录" bordered={false} style={{ width: 300, textAlign: "center" }}>
+                            <Form onSubmit={this.onSubmit}>
                                 <Form.Item label="用户名">
-                                    <Input value={this.state.form.u} onChange={this.onChange.bind(this, 'u')}></Input>
+                                    {
+                                        getFieldDecorator('u', {
+                                            rules: [{ required: true, message: '请输入手机号' }],
+                                            initialValue: this.state.form.u
+                                        })(
+                                            <Input placeholder="请输入手机号" onChange={this.onChangeU} />
+                                        )
+                                    }
+
                                 </Form.Item>
                                 <Form.Item label="密码">
-                                    <Input value={this.state.form.p} onChange={this.onChange.bind(this, 'p')}></Input>
-                                    <Input value={this.state.form.k} ></Input>
+                                    {
+                                        getFieldDecorator('p', {
+                                            rules: [{ required: true, message: '请输入密码' }],
+                                            initialValue: this.state.form.p
+                                        })(
+                                            <Input placeholder="请输入密码" onChange={this.onChangeP} />
+                                        )
+                                    }
+                                </Form.Item>
+
+                                <Form.Item>
+
+                                    {
+                                        getFieldDecorator('k', {
+                                            initialValue: this.state.form.k
+                                        })(
+                                            <Input readOnly onChange={this.onChangeK} />
+                                        )
+                                    }
                                 </Form.Item>
 
                                 <Form.Item className='loginBtn'>
-                                    <Button type="primary" nativeType="submit">登录</Button>
+                                    <Button type="primary" htmlType="submit">登录</Button>
                                 </Form.Item>
                             </Form>
                         </Card>
-
-                    </Layout.Col>
-                </Layout.Row>
+                    </Col>
+                    <Col span={4}></Col>
+                </Row>
 
             </React.Fragment>
         )
@@ -103,4 +154,4 @@ class Login extends Component {
 }
 
 
-export default withRouter(Login)
+export default withRouter(Form.create()(Login))

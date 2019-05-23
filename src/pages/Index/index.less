@@ -71,30 +71,35 @@
         text-align: center;
         line-height: 200px;
         transition: all 0.3s;
-        overflow-x: hidden;
-        .left-nav-ul{
-            li{
+
+        .left-aside-wrap {
+            background: none;
+
+            >li {
+                margin-left: -16px;
+                text-align: left;
                 a{
+                }
+            }
+
+            .sub-me-wrap {
+                div {
+                    padding-left: 30px !important;
                     color: #48576a;
                 }
-                i{
-                    color: #48576a;
+
+                li {
+                    margin-left: -18px;
+                    padding: 0;
                 }
             }
         }
-
-
-
-
-
-
-        
-
     }
 
     .index-main {
         background-color: #e9eef3;
         color: #333;
+        text-align: center;
     }
 
 }
@@ -120,13 +125,40 @@
 }
 
 .user-top {
-    color: #fff;
+    color: #fff !important;
 }
 
 .th-li {
     padding: 0 28px !important;
 
     a {
-        color: #48576a;
+        display: inline-block;
     }
 }
+
+
+
+
+
+
+
+#components-layout-demo-custom-trigger .trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  #components-layout-demo-custom-trigger .trigger:hover {
+    color: #1890ff;
+  }
+  
+  #components-layout-demo-custom-trigger .logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+  }
+
+
+
