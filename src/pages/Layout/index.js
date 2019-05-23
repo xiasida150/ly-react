@@ -8,7 +8,7 @@ export default class Layout extends Component {
     render() {
         return (
             <Switch>
-                <Route path="/index"  component={Load(() => import('../Index'))} />
+                <Route path="/index"   component={Load(() => import('../Index'))} />
                 <Route path="/login" component={Load(() => import('../Login'))} />
                 <Route path="/select-hospital" component={Load(() => import('../SelectHospital'))} />
                 <Redirect to="/login" />

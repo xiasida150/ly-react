@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { getRsakey, login } from './login-api.js';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
 import { withRouter } from 'react-router-dom';
-import { Card, Form, Input, Select, Layout, Button, } from 'element-react';
+import { Card, Form, Input, Select, Layout, Button, } from 'antd';
 import './login.less';
 
 
@@ -103,4 +103,4 @@ class Login extends Component {
 }
 
 
-export default withRouter(Login)
+export default Form.create()(withRouter(Login))

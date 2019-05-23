@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { aesEdd, getAesKey, rsaAdd } from '@/util/DES';
 import { withRouter } from 'react-router-dom';
-import { Card, Form, Input, Select, Layout, Button, } from 'element-react';
+import { Card, Form, Input, Select, Layout, Button, } from 'antd';
 import { getHospitalList, getHospitalInfo } from './api.js';
 
 
@@ -34,7 +34,7 @@ class SelectHospital extends Component {
         e.preventDefault();
         const { hospitalId } = this.state.hospital;
         let hospitalInfo = hospitalId ? await getHospitalInfo({ hospitalId, type: "true" }) : '';
-        if(hospitalInfo){
+        if (hospitalInfo) {
             localStore.set('doctor', JSON.stringify(hospitalInfo.doctor))
             localStore.set('hospitalInfo', JSON.stringify(hospitalInfo.hospitalInfo))
             localStore.set("hospitalId", hospitalId);
@@ -93,7 +93,7 @@ class SelectHospital extends Component {
                                 </Form.Item>
 
                                 <Form.Item className='loginBtn' style={{ marginTop: 166 }}>
-                                    <Button style={{width: '100%'}} type="primary" nativeType="submit">登录</Button>
+                                    <Button style={{ width: '100%' }} type="primary" nativeType="submit">登录</Button>
                                 </Form.Item>
                             </Form>
                         </Card>
@@ -107,4 +107,4 @@ class SelectHospital extends Component {
 }
 
 
-export default withRouter(SelectHospital)
+export default Form.create()(withRouter(SelectHospital))
