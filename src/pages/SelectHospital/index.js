@@ -107,4 +107,4 @@ class SelectHospital extends Component {
 }
 
 
-export default Form.create()(withRouter(SelectHospital))
+export default withRouter(Form.create()(SelectHospital))
