@@ -8,7 +8,7 @@ export const mergeMenu = function (data, para) {
     cloneData = cloneData.sort(sortFunction)
     cloneData.map(item => {
         routes.map(route => {
-            if(route.feUrl && route.menuName === item.menuName){
+            if (route.feUrl && route.menuName === item.menuName) {
                 item.feUrl = route.feUrl
             }
         })

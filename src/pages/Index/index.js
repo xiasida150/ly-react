@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Button } from 'antd';
 
 import { BrowserRouter, Route, Switch, exact, Redirect, Link } from 'react-router-dom';
 import { getMenuLists } from "./api.js";
@@ -13,12 +13,16 @@ const { Header, Sider, Content, Footer } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
+
 export default class Index extends Component {
 
 
     state = {
         collapsed: false,
-        openKeys: ['sub1'],
+        openKeys: ['1'],
+        leftFlag: true,
+        leftList: [],
+        rootSubmenuKeys: [],
     };
 
 
@@ -36,14 +40,15 @@ export default class Index extends Component {
         let menulists = await getMenuLists();
         let menulist = menulists.filter(item => item.menuType === 1);
         let meList = mergeMenu(menulist, 'menuPid')
-        console.log('meList --> ', meList)
         this.setState({
-            leftList: meList
+            leftList: meList,
+            rootSubmenuKeys: [...Array(meList.length).keys()]
         })
     }
 
 
-    rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
+    // rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
+    rootSubmenuKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 
 
@@ -60,84 +65,102 @@ export default class Index extends Component {
 
 
 
+
+    // 切换左边菜单栏
+    toggleSiderMenu = () => {
+        this.setState({
+            leftFlag: !this.state.leftFlag
+        })
+    }
+
+
+
     render() {
-        const { collapsed } = this.state;
+        const { leftFlag, leftList } = this.state;
+        const MenList = leftList.length && leftList.map((item, index) => {
+            return item.children ?
+                <SubMenu
+                    key={index}
+                    className='first-li'
+                    title={
+                        <span>
+                            <i className="iconfont" dangerouslySetInnerHTML={{ __html: item.menuIcon }}></i>
+                            &nbsp;
+                            <span>{item.menuName}</span>
+                        </span>
+                    }
+                >
+                    {
+                        item.children.map((twoItem, twoIndex) => {
+                            if (twoItem.children) {
+                                return <SubMenu
+                                    key={index + '-' + twoIndex}
+                                    className='two-li'
+                                    title={
+                                        <span>
+                                            <span>{twoItem.menuName}</span>
+                                        </span>
+                                    }
+                                >
+                                    {
+                                        twoItem.children && twoItem.children.map((threeItem, threeIndex) => {
 
+                                            return <Menu.Item className='three-li' key={index + '-' + twoIndex + '-' + threeIndex}>{threeItem.menuName}</Menu.Item>
+
+                                        })
+                                    }
+                                </SubMenu>
+                            } else {
+                                return <Menu.Item className='two-li' key={index + '-' + twoIndex}>
+                                {twoItem.menuName}
+                                </Menu.Item>
+                            }
+                        })
+                    }
+                </SubMenu> :
+                <Menu.Item key={index} className='first-li'>
+                    <i className="iconfont" dangerouslySetInnerHTML={{ __html: item.menuIcon }}></i>
+                    &nbsp;
+                    {item.menuName}
+                </Menu.Item>
+        })
+
+
+
+        
         return (
-
             <Layout>
-
-               
-               
-               
-                <Header style={{ position: 'fixed', zIndex: 1, width: '100%',background:'#fff' }} />
-
+                <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: '#fff' }} >
+                    <span className="logo">
+                        156464641
+                    </span>
+                    <Button type="" onClick={this.toggleSiderMenu}>
+                        <i className="iconfont">&#xe602;</i>
+                    </Button>
+                </Header>
 
                 <Sider
                     style={{
                         overflow: 'auto',
-                        height: '100vh',
+                        height: '93vh',
                         position: 'fixed',
-                        background:'#fff',
-                        left: 0,
+                        background: '#fff',
+                        left: leftFlag ? 0 : -200,
                         top: 65,
                     }}
                 >
-                    <Menu theme="" mode="inline" 
-                        defaultSelectedKeys={['4']}
+                    <Menu theme="" mode="inline"
+                        defaultSelectedKeys={this.state.openKeys}
                         onOpenChange={this.onOpenChange}
                         openKeys={this.state.openKeys}
-                        >
-                        <SubMenu
-                            key="sub1"
-                            title={
-                                <span>
-                                    <Icon type="mail" />
-                                    <span>Navigation One</span>
-                                </span>
-                            }
-                        >
-                            <Menu.Item key="1">Option 1</Menu.Item>
-                            <Menu.Item key="2">Option 2</Menu.Item>
-                            <Menu.Item key="3">Option 3</Menu.Item>
-                            <Menu.Item key="4">Option 4</Menu.Item>
-                        </SubMenu>
-                        <SubMenu
-                            key="sub2"
-                            title={
-                                <span>
-                                    <Icon type="appstore" />
-                                    <span>Navigation Two</span>
-                                </span>
-                            }
-                        >
-                            <Menu.Item key="5">Option 5</Menu.Item>
-                            <Menu.Item key="6">Option 6</Menu.Item>
-                            <SubMenu key="sub3" title="Submenu">
-                                <Menu.Item key="7">Option 7</Menu.Item>
-                                <Menu.Item key="8">Option 8</Menu.Item>
-                            </SubMenu>
-                        </SubMenu>
-                        <SubMenu
-                            key="sub4"
-                            title={
-                                <span>
-                                    <Icon type="setting" />
-                                    <span>Navigation Three</span>
-                                </span>
-                            }
-                        >
-                            <Menu.Item key="9">Option 9</Menu.Item>
-                            <Menu.Item key="10">Option 10</Menu.Item>
-                            <Menu.Item key="11">Option 11</Menu.Item>
-                            <Menu.Item key="12">Option 12</Menu.Item>
-                        </SubMenu>
+                    >
+                        {MenList}
                     </Menu>
                 </Sider>
 
-                <Layout style={{ marginLeft: 200 }}>
+                <Layout style={{ marginLeft: leftFlag ? 200 : 0 }}>
 
-                    <Content style={{ margin: '65px 0 0 16px', overflow: 'initial' }}>
+                    <Content style={{ margin: '65px 0 0 8px', overflow: 'initial' }}>
                         <div style={{ padding: 24, background: '#fff', textAlign: 'center' }}>
                             ...
           <br />
