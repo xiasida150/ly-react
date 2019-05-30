@@ -5,35 +5,30 @@ import { BrowserRouter, Route, Switch, exact, Redirect, Link } from 'react-route
 import { getMenuLists } from "./api.js";
 import { mergeMenu } from "@/util/tool";
 import { routes } from '@/pages/Layout/routers';
+import Load from '@/util/lazy';
+
 
 
 import './index.less';
 
 const { Header, Sider, Content, Footer } = Layout;
 const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
-
 
 export default class Index extends Component {
 
-
     state = {
         collapsed: false,
-        openKeys: ['1'],
+        openKeys: ['0'],
         leftFlag: true,
         leftList: [],
         rootSubmenuKeys: [],
     };
-
 
     toggle = () => {
         this.setState({
             collapsed: !this.state.collapsed,
         });
     };
-
-
-
 
     //WARNING! To be deprecated in React v17. Use componentDidMount instead.
     async componentWillMount() {
@@ -46,11 +41,8 @@ export default class Index extends Component {
         })
     }
 
-
     // rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
     rootSubmenuKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-
-
 
     onOpenChange = openKeys => {
         const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
@@ -63,9 +55,6 @@ export default class Index extends Component {
         }
     };
 
-
-
-
     // 切换左边菜单栏
     toggleSiderMenu = () => {
         this.setState({
@@ -73,10 +62,9 @@ export default class Index extends Component {
         })
     }
 
-
-
     render() {
         const { leftFlag, leftList } = this.state;
+        console.log('leftList --> ', leftList)
         const MenList = leftList.length && leftList.map((item, index) => {
             return item.children ?
                 <SubMenu
@@ -105,14 +93,23 @@ export default class Index extends Component {
                                     {
                                         twoItem.children && twoItem.children.map((threeItem, threeIndex) => {
 
-                                            return <Menu.Item className='three-li' key={index + '-' + twoIndex + '-' + threeIndex}>{threeItem.menuName}</Menu.Item>
+                                            return <Menu.Item className='three-li' key={index + '-' + twoIndex + '-' + threeIndex}>
+                                                <Link to={{
+                                                    pathname: threeItem.feUrl,
+                                                    state: threeItem.Breadcrumb,
+                                                }}>{threeItem.menuName}
+                                                </Link>
+                                            </Menu.Item>
 
                                         })
                                     }
                                 </SubMenu>
                             } else {
                                 return <Menu.Item className='two-li' key={index + '-' + twoIndex}>
-                                {twoItem.menuName}
+                                    <Link to={{
+                                        pathname: twoItem.feUrl,
+                                        state: twoItem.Breadcrumb,
+                                    }}>{twoItem.menuName}</Link>
                                 </Menu.Item>
                             }
                         })
@@ -121,13 +118,13 @@ export default class Index extends Component {
                 <Menu.Item key={index} className='first-li'>
                     <i className="iconfont" dangerouslySetInnerHTML={{ __html: item.menuIcon }}></i>
                     &nbsp;
-                    {item.menuName}
+                    <Link to={{
+                        pathname: item.feUrl,
+                        state: item.Breadcrumb,
+                    }}>{item.menuName}</Link>
                 </Menu.Item>
         })
 
-
-
-        
         return (
             <Layout>
                 <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: '#fff' }} >
@@ -147,6 +144,7 @@ export default class Index extends Component {
                         background: '#fff',
                         left: leftFlag ? 0 : -200,
                         top: 65,
+                        borderRight: '1px solid #e8e8e8',
                     }}
                 >
                     <Menu theme="" mode="inline"
@@ -161,105 +159,20 @@ export default class Index extends Component {
                 <Layout style={{ marginLeft: leftFlag ? 200 : 0 }}>
 
                     <Content style={{ margin: '65px 0 0 8px', overflow: 'initial' }}>
-                        <div style={{ padding: 24, background: '#fff', textAlign: 'center' }}>
-                            ...
-          <br />
-                            Really
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            long
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            ...
-          <br />
-                            content
-        </div>
+                        <div style={{ padding: 24, background: '#fff', }}>
+                            <Switch>
+                                {
+                                    routes.map((item, index) => {
+                                        return <Route path={item.feUrl}
+                                            key={index}
+                                            component={item.component} />
+                                    })
+                                }
+                                <Redirect to={{ pathname: '/index' }} />
+                            </Switch>
+                        </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+                    <Footer style={{ textAlign: 'center' }}></Footer>
                 </Layout>
             </Layout>
         )

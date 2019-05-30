@@ -9,7 +9,11 @@ export const mergeMenu = function (data, para) {
     cloneData.map(item => {
         routes.map(route => {
             if (route.feUrl && route.menuName === item.menuName) {
-                item.feUrl = route.feUrl
+                // item.feUrl = route.feUrl
+                console.log('item --> ', item)
+                console.log('route --> ', route)
+                item = { ...route, ...item }
+                console.log('item --> ', item)
             }
         })
     })

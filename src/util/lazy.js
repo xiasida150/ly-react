@@ -8,7 +8,6 @@ export default function (loading) {
         };
         async componentWillMount() {
             let Com = await loading();
-            console.log('Com =>', Com)
             this.setState({
                 Com: Com.default || null
             })

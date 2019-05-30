@@ -1,7 +1,6 @@
 /* global localStore */
 import Axios from "axios";
 import qs from 'qs';
-import { createBrowserHistory, createHashHistory } from 'history';
 import { aesAdd, aesEdd, getAesKey } from '@/util/DES';
 
 export const sso = `/a/sso/v1`;
@@ -11,7 +10,6 @@ const AesKeyStr = localStore.get('user') ? JSON.parse(localStore.get('user')).ae
 
 const AesKey = AesKeyStr.slice(0, 16)
 const IV = AesKeyStr.slice(16, 32)
-
 
 Axios.defaults.timeout = 5000;
 Axios.defaults.baseURL = process.env.REACT_APP_URL; //这是调用数据接口
