@@ -1,12 +1,12 @@
-import { get, post, auth, sso } from "@/util/request";
+import { get, post, auth, sso, follow } from "@/util/request";
 
-
+// 获取菜单
 export async function getMenuLists() {
     return await get(auth + `/role/menu/get`)
 }
-
-export async function getHospitalInfo(data) {
-    return await get(sso + `/get/hospital/info`, data)
+// 获取人群类型
+export async function getPopulationType(data) {
+    return await get(follow + `/population/get/population/list`, data)
 }
 
 

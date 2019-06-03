@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { HashRouter as Router, Route, Switch, Link, withRouter } from 'react-router-dom';
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import Crumbs from '@/comm/Crumbs.jsx';
+import Population from "./../../../comm/Population.jsx";
 import './style.less';
 
 function hasErrors(fieldsError) {
@@ -26,52 +27,58 @@ class HealthRecord extends Component {
     };
 
 
+
     render() {
         const { crumbsText } = this.props.location.state;
         const pathSnippets = (crumbsText || '').split(',')
-        const { getFieldDecorator, getFieldsError} = this.props.form;
+        const { getFieldDecorator, getFieldsError } = this.props.form;
 
         return (
             <Fragment>
                 <Crumbs textArr={pathSnippets} />
 
 
-                <Form layout="inline" onSubmit={this.handleSubmit}>
-                    <Form.Item className='sea-from-input-item'>
-                        {getFieldDecorator('personalInput', {})
+                <Form onSubmit={this.handleSubmit}>
+                    <Form.Item className='list-form-item'>
+                        <Form.Item className='sea-from-input-item'>
+                            {getFieldDecorator('personalInput', {})
+                                (
+                                    <Input
+                                        placeholder="请输入姓名/身份证/电话/现住址"
+                                    />,
+                                )}
+                        </Form.Item>
+                        <Form.Item className='sea-from-input-item'>
+                            {getFieldDecorator('recordInput', {})
+                                (
+                                    <Input
+                                        placeholder="请输入建档单位/建档人/责任医生"
+                                    />,
+                                )}
+                        </Form.Item>
+
+                        <Form.Item style={{ display: 'inline-block', }}>
+                            <Button type="primary"
+                                icon="search"
+                                className='sea-btn'
+                                htmlType="submit" >
+                                搜索
+                            </Button>
+                            &nbsp;
+                            <Button type="button" className='btn-blue' htmlType="button" onClick={this.handleReset} >
+                                清除条件
+                            </Button >
+                        </Form.Item>
+                    </Form.Item>
+
+                    <Form.Item className='label-tit list-form-item' label='人群类型'>
+                        {getFieldDecorator('populationClassVal', {
+                            initialValue: []
+                        })
                             (
-                                <Input
-                                    placeholder="请输入姓名/身份证/电话/现住址"
-                                />,
+                                <Population  />,
                             )}
                     </Form.Item>
-                    <Form.Item className='sea-from-input-item'>
-                        {getFieldDecorator('recordInput', {})
-                            (
-                                <Input
-                                    placeholder="请输入建档单位/建档人/责任医生"
-                                />,
-                            )}
-                    </Form.Item>
-
-
-
-
-                    <Form.Item>
-                        <Button type="primary"
-                            icon="search"
-                            className='sea-btn'
-                            htmlType="submit" >
-                            搜索
-                        </Button>
-                        &nbsp;
-                        <Button type="button" className='btn-blue' htmlType="button" onClick={this.handleReset} >
-                            清除条件
-                        </Button >
-
-                    </Form.Item>
-
-
 
 
                 </Form>

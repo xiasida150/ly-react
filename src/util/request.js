@@ -3,9 +3,16 @@ import Axios from "axios";
 import qs from 'qs';
 import { aesAdd, aesEdd, getAesKey } from '@/util/DES';
 
-export const sso = `/a/sso/v1`;
-export const img = `/f/v1`;
-export const auth = `a/auth/v1`;
+export const sso = '/a/sso/v1';
+export const auth = '/a/auth/v1';
+export const sign = '/c/sign/v1';
+export const img = '/f/v1';
+export const buss = '/b/v1';
+export const follow = '/h/v1';
+export const t = '/t/v1';
+export const m = '/m/v1';
+export const log = '/m/v1/log';
+
 const AesKeyStr = localStore.get('user') ? JSON.parse(localStore.get('user')).aeskey : '' || getAesKey();
 
 const AesKey = AesKeyStr.slice(0, 16)
@@ -54,7 +61,7 @@ Axios.interceptors.response.use(
                 // const history = createBrowserHistory({});
                 // console.log("history ", history.replace);
 
-                window.location.replace('/login');
+                // window.location.replace('/login');
             }
             data = data ? (data.replace(/[\r\n]/g, '')).trim() : '';
             return code === 200 && typeof data == 'string' ?
