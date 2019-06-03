@@ -4,18 +4,16 @@ import { routes } from './../pages/Layout/routers'
 const sortFunction = (a, b) => a.menuSort - b.menuSort
 
 export const mergeMenu = function (data, para) {
-    let cloneData = JSON.parse(JSON.stringify(data))
+    // let cloneData = JSON.parse(JSON.stringify(data))
+    let cloneData = data
     cloneData = cloneData.sort(sortFunction)
-    cloneData.map(item => {
+    cloneData = cloneData.map(item => {
         routes.map(route => {
             if (route.feUrl && route.menuName === item.menuName) {
-                // item.feUrl = route.feUrl
-                console.log('item --> ', item)
-                console.log('route --> ', route)
                 item = { ...route, ...item }
-                console.log('item --> ', item)
             }
         })
+        return item
     })
     return cloneData.filter(father => {
         let child = cloneData.filter(child => {

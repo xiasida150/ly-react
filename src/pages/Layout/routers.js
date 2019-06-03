@@ -45,7 +45,7 @@ export const routes = [{
 {
     feUrl: '/people/files',
     menuName: '居民健康档案',
-    Breadcrumb:'档案管理,居民健康档案',
+    crumbsText:'档案管理,居民健康档案',
     exact: false,
     component: Load(() => import('@/pages/views/healthRecord')),
 },

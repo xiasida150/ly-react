@@ -64,7 +64,6 @@ export default class Index extends Component {
 
     render() {
         const { leftFlag, leftList } = this.state;
-        console.log('leftList --> ', leftList)
         const MenList = leftList.length && leftList.map((item, index) => {
             return item.children ?
                 <SubMenu
@@ -96,7 +95,7 @@ export default class Index extends Component {
                                             return <Menu.Item className='three-li' key={index + '-' + twoIndex + '-' + threeIndex}>
                                                 <Link to={{
                                                     pathname: threeItem.feUrl,
-                                                    state: threeItem.Breadcrumb,
+                                                    state: { crumbsText: threeItem.crumbsText },
                                                 }}>{threeItem.menuName}
                                                 </Link>
                                             </Menu.Item>
@@ -108,7 +107,7 @@ export default class Index extends Component {
                                 return <Menu.Item className='two-li' key={index + '-' + twoIndex}>
                                     <Link to={{
                                         pathname: twoItem.feUrl,
-                                        state: twoItem.Breadcrumb,
+                                        state: { crumbsText: twoItem.crumbsText },
                                     }}>{twoItem.menuName}</Link>
                                 </Menu.Item>
                             }
@@ -120,7 +119,7 @@ export default class Index extends Component {
                     &nbsp;
                     <Link to={{
                         pathname: item.feUrl,
-                        state: item.Breadcrumb,
+                        state: { crumbsText: item.crumbsText },
                     }}>{item.menuName}</Link>
                 </Menu.Item>
         })
@@ -172,7 +171,7 @@ export default class Index extends Component {
                             </Switch>
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}></Footer>
+                    <Footer style={{ textAlign: 'center' }}>dibu</Footer>
                 </Layout>
             </Layout>
         )

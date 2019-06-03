@@ -1,33 +1,86 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { HashRouter as Router, Route, Switch, Link, withRouter } from 'react-router-dom';
-import { Breadcrumb, Alert } from 'antd';
+import { Form, Icon, Input, Button } from 'antd';
+import Crumbs from '@/comm/Crumbs.jsx';
+import './style.less';
+
+function hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
+
 
 class HealthRecord extends Component {
+
+
+
+    handleSubmit = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
+        });
+    };
+    handleReset = () => {
+        this.props.form.resetFields();
+    };
+
+
     render() {
-        const { location } = this.props;
-        console.log('this.props --> ', this.props)
-        console.log('location --> ', location)
+        const { crumbsText } = this.props.location.state;
+        const pathSnippets = (crumbsText || '').split(',')
+        const { getFieldDecorator, getFieldsError} = this.props.form;
 
-        const pathSnippets = location.pathname.split('/').filter(i => i);
         return (
-            <div>
+            <Fragment>
+                <Crumbs textArr={pathSnippets} />
+
+
+                <Form layout="inline" onSubmit={this.handleSubmit}>
+                    <Form.Item className='sea-from-input-item'>
+                        {getFieldDecorator('personalInput', {})
+                            (
+                                <Input
+                                    placeholder="请输入姓名/身份证/电话/现住址"
+                                />,
+                            )}
+                    </Form.Item>
+                    <Form.Item className='sea-from-input-item'>
+                        {getFieldDecorator('recordInput', {})
+                            (
+                                <Input
+                                    placeholder="请输入建档单位/建档人/责任医生"
+                                />,
+                            )}
+                    </Form.Item>
 
 
 
-                <Breadcrumb separator=">">
-                    <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    <Breadcrumb.Item href="">Application Center</Breadcrumb.Item>
-                    <Breadcrumb.Item href="">Application List</Breadcrumb.Item>
-                    <Breadcrumb.Item>An Application</Breadcrumb.Item>
-                </Breadcrumb>
+
+                    <Form.Item>
+                        <Button type="primary"
+                            icon="search"
+                            className='sea-btn'
+                            htmlType="submit" >
+                            搜索
+                        </Button>
+                        &nbsp;
+                        <Button type="button" className='btn-blue' htmlType="button" onClick={this.handleReset} >
+                            清除条件
+                        </Button >
+
+                    </Form.Item>
 
 
-                居民健康档案
-            </div>
+
+
+                </Form>
+
+            </Fragment>
         )
     }
 }
 
 
 
-export default withRouter(HealthRecord)
+export default withRouter(Form.create()(HealthRecord))
