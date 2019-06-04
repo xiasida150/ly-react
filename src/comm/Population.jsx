@@ -13,7 +13,9 @@ export default class Population extends Component {
             value: '',
             key: '',
             defaultChecked: true,
+            checked: true,
         }],
+        reselutValue: [],
         textarr: []
     };
     async componentWillMount() {
@@ -35,7 +37,6 @@ export default class Population extends Component {
                 label: item.name,
                 value: item.val,
                 key: item.val,
-                defaultChecked: false,
             }
         })
     }
@@ -43,41 +44,48 @@ export default class Population extends Component {
 
 
     onChange = (e) => {
-        const { textarr, Alloptions } = this.state
-        if (e.target.checked) {
-            Alloptions.map(i => {
-                i.defaultChecked = false
-                i.checked = false
-            })
-            var o = textarr.filter(i => i.value === e.target.value)[0];
-            o.defaultChecked = true
-            o.checked = true
-            this.setState({
-                Alloptions,
-                textarr
-            })
+        const { Alloptions, textarr, reselutValue } = this.state
+        const obj = textarr.filter(i => i.value === e.target.value)[0]
+        const { onChange } = this.props
+
+        if (Alloptions[0].checked) {
+            Alloptions[0].defaultChecked = false
+            Alloptions[0].checked = false
         }
+        if (e.target.checked) {
+            obj.checked = true
+            reselutValue.push(e.target.value)
+        } else {
+            obj.checked = false
+            reselutValue.splice(reselutValue.indexOf(e.target.value), 1)
+        }
+        this.setState({
+            Alloptions,
+            textarr
+        })
+        onChange(reselutValue)
     }
 
     onChangeCancel = (e) => {
-        const { textarr, Alloptions } = this.state
+        const { Alloptions, textarr, reselutValue } = this.state;
+        const { onChange } = this.props
         if (e.target.checked) {
+            Alloptions[0].checked = true
             textarr.map(i => {
-                i.defaultChecked = false
                 i.checked = false
             })
-            Alloptions[0].defaultChecked = true
-            Alloptions[0].checked = true
-            this.setState({
-                textarr,
-                Alloptions
-            })
         }
+        this.setState({
+            Alloptions,
+            textarr,
+            reselutValue:[],
+        })
+        onChange([])
     }
 
 
     render() {
-        const { options, Alloptions, textarr } = this.state
+        const { Alloptions, textarr, reselutValue } = this.state
         return (
             <Fragment>
                 {
