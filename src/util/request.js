@@ -61,7 +61,7 @@ Axios.interceptors.response.use(
                 // const history = createBrowserHistory({});
                 // console.log("history ", history.replace);
 
-                // window.location.replace('/login');
+                window.location.replace('/login');
             }
             data = data ? (data.replace(/[\r\n]/g, '')).trim() : '';
             return code === 200 && typeof data == 'string' ?

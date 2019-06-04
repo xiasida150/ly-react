@@ -29,8 +29,8 @@ class HealthRecord extends Component {
 
 
     render() {
-        const { crumbsText } = this.props.location.state;
-        const pathSnippets = (crumbsText || '').split(',')
+        const { crumbsText } = this.props.location.state || {};
+        const pathSnippets = (crumbsText || ',').split(',')
         const { getFieldDecorator, getFieldsError } = this.props.form;
 
         return (
@@ -72,12 +72,10 @@ class HealthRecord extends Component {
                     </Form.Item>
 
                     <Form.Item className='label-tit list-form-item' label='人群类型'>
-                        {getFieldDecorator('populationClassVal', {
-                            initialValue: []
-                        })
-                            (
-                                <Population  />,
-                            )}
+                        {getFieldDecorator('populationClassVal', {}
+                        )(
+                            <Population data='populationClassVal'/>,
+                        )}
                     </Form.Item>
 
 

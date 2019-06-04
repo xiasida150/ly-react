@@ -4,8 +4,7 @@ import { routes } from './../pages/Layout/routers'
 const sortFunction = (a, b) => a.menuSort - b.menuSort
 
 export const mergeMenu = function (data, para) {
-    // let cloneData = JSON.parse(JSON.stringify(data))
-    let cloneData = data
+    let cloneData = JSON.parse(JSON.stringify(data))
     cloneData = cloneData.sort(sortFunction)
     cloneData = cloneData.map(item => {
         routes.map(route => {

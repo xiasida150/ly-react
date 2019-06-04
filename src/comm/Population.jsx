@@ -8,8 +8,13 @@ import { getPopulationType } from './../pages/Index/api';
 export default class Population extends Component {
 
     state = {
-        typeArrs: [],
-        defaultValue: [],
+        Alloptions: [{
+            label: '不限',
+            value: '',
+            key: '',
+            defaultChecked: true,
+        }],
+        textarr: []
     };
     async componentWillMount() {
         let data = {
@@ -18,50 +23,69 @@ export default class Population extends Component {
         let PopulationType = await getPopulationType(data);
         PopulationType = this.populationTypeHandler(PopulationType)
         this.setState({
-            typeArrs: PopulationType
+            textarr: PopulationType,
         })
     }
 
 
     // 处理人群类型函数
     populationTypeHandler = (data) => {
-        let noneValArr = [{ name: '不限', val: '', }]
-        return noneValArr.concat(data).map(item => {
+        return data.map(item => {
             return {
                 label: item.name,
                 value: item.val,
-                disabled: false,
-                checked: false,
+                key: item.val,
+                defaultChecked: false,
             }
         })
     }
 
 
-    onChange = (checkedValues) => {
-        console.log('checked = ', checkedValues);
-        const { typeArrs } = this.state;
 
-        if (checkedValues.indexOf('') === 0) {
-            this.state.typeArrs[0].checked = true;
-            this.state.typeArrs[0].disabled = false;
-            this.setState({
-                typeArrs: this.state.typeArrs,
+    onChange = (e) => {
+        const { textarr, Alloptions } = this.state
+        if (e.target.checked) {
+            Alloptions.map(i => {
+                i.defaultChecked = false
+                i.checked = false
             })
-
+            var o = textarr.filter(i => i.value === e.target.value)[0];
+            o.defaultChecked = true
+            o.checked = true
+            this.setState({
+                Alloptions,
+                textarr
+            })
         }
     }
+
+    onChangeCancel = (e) => {
+        const { textarr, Alloptions } = this.state
+        if (e.target.checked) {
+            textarr.map(i => {
+                i.defaultChecked = false
+                i.checked = false
+            })
+            Alloptions[0].defaultChecked = true
+            Alloptions[0].checked = true
+            this.setState({
+                textarr,
+                Alloptions
+            })
+        }
+    }
+
+
     render() {
-        const { typeArrs, defaultValue,  } = this.state;
+        const { options, Alloptions, textarr } = this.state
         return (
             <Fragment>
-                <Checkbox.Group
-                    style={{ width: '100%', display: 'inline-block' }}
-                    checked={this.state.checked}
-                    disabled={this.state.disabled}
-                    options={typeArrs}
-                    defaultValue={defaultValue}
-                    onChange={this.onChange}
-                />
+                {
+                    Alloptions.map(i => <Checkbox onChange={this.onChangeCancel} {...i}  >{i.label}</Checkbox>)
+                }
+                {
+                    textarr.map(i => <Checkbox onChange={this.onChange}  {...i} >{i.label}</Checkbox>)
+                }
             </Fragment>
         )
     }
